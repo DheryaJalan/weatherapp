@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>UV Saftey!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
+</head>
+
+<body>
+  <header class="site-header">
+  <nav class="navbar navbar-expand-md " fixed-top">
+    <div class="container">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+        <div class="navbar-nav">
+            <a class="nav-item nav-link" class="navbar-nav mr-auto" href="{{ url_for('index_post') }}">Home</a>
+
+            {% if current_user.is_authenticated %}
+                <a class="nav-item nav-link" class="navbar-nav mr-auto" href="{{ url_for('logout') }}">Log out</a>
+            {% else %}
+                <a class="nav-item nav-link" class="navbar-nav mr-auto" href="{{ url_for('login') }}">Sign In</a>
+                <a class="nav-item nav-link" class="navbar-nav mr-auto" href="{{ url_for('register') }}">Sign up</a>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+  </header>
+  {% block content %}
+    <section class="hero is-primary">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    Don't Fry Day!
+                </h1>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    <form method="POST">
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <input class="input" name="city" type="text" placeholder="City Name">
+                            </div>
+                            <div class="control">
+                                <button class="button is-info">
+                                    Add City
+                                </button>
+                            </div>
+                        </div>
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                        {% if messages %}
+                        {% for category,message in messages %}
+                        {% set message_class = 'is-success'%}
+                        {% if category == 'error'%}
+                          {% set message_class = 'is-danger'%}
+                        {% endif %}
+
+                        <div class="notification {{message_class}}">{{ message }}</div>
+                        {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    {% for weather in weather_lst %}
+                    <div class="box">
+                        <article class="media">
+                            <div class="media-left">
+                                <figure class="image is-50x50">
+                                    <img src="http://openweathermap.org/img/w/{{ weather.icon }}.png" alt="Image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <span class="title">{{ weather.city }}</span>
+                                        <br>
+                                        <span class="subtitle"> temperature: {{ weather.temperature }}° C</span>
+                                        </br><span class="subtitle">  uv index : {{ weather.uv }}</span>
+                                      </br> {{ weather.description }}
+                                      {% if weather.uv == 0 or weather.uv > 0  %}
+                                          {% if weather.uv < 2 or weather.uv == 2 %}
+                                        </br>A UV Index reading of {{ weather.uv }} means low danger from the sun's UV rays.Wear sunglasses on bright days.If you burn easily, cover up and use broad spectrum SPF 30+ sunscreen.
+                                          {% elif weather.uv < 5 or weather.uv == 5 %}
+                                              </br> A UV Index reading of {{ weather.uv }} means moderate risk of harm from unprotected sun exposure.Stay in shade near midday when the sun is strongest.
+                                              </br>If outdoors, wear protective clothing, a wide-brimmed hat, and UV-blocking sunglasses.
+                                              </br>Watch out for bright surfaces, like sand, water and snow, which reflect UV and increase exposure.
+                                          {% elif weather.uv < 7 or weather.uv == 7 %}
+                                              </br>A UV Index reading of {{ weather.uv }} means high risk of harm from unprotected sun exposure.
+                                              </br>Reduce time in the sun between 10 a.m. and 4 p.m.
+                                              </br>If outdoors, wear protective clothing, a wide-brimmed hat, and UV-blocking sunglasses.
+                                              </br>Generously apply broad spectrum SPF 30+ sunscreen every 2 hours, even on cloudy days, and after swimming or sweating.
+                                              </br>Watch out for bright surfaces, like sand, water and snow, which reflect UV and increase exposure.
+                                          {% elif weather.uv < 10 or weather.uv == 10 %}
+                                        </br>A UV Index reading of {{ weather.uv }} means very high risk of harm from unprotected sun exposure.Take a lot of precautions.
+                                              </br>Reduce time in the sun between 10 a.m. and 4 p.m.
+                                              </br>If outdoors, wear protective clothing, a wide-brimmed hat, and UV-blocking sunglasses.
+                                              </br>Generously apply broad spectrum SPF 30+ sunscreen every 2 hours, even on cloudy days, and after swimming or sweating.
+                                              </br>Watch out for bright surfaces, like sand, water and snow, which reflect UV and increase exposure.
+                                          {% elif weather.uv > 10 %}
+                                              </br>A UV Index reading of {{ weather.uv }} means extreme risk of harm from unprotected sun exposure.
+                                              </br>Reduce time in the sun between 10 a.m. and 4 p.m.
+                                              </br>If outdoors, wear protective clothing, a wide-brimmed hat, and UV-blocking sunglasses.
+                                              </br>Generously apply broad spectrum SPF 30+ sunscreen every 2 hours, even on cloudy days, and after swimming or sweating.
+                                              </br>Watch out for bright surfaces, like sand, water and snow, which reflect UV and increase exposure.
+                                          {% endif %}
+                                      {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="media-right">
+                            <a href = "{{ url_for('delete_city', name = weather.city) }}" <button class="delete"></button></a>
+                            </div>
+                        </article>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endblock content%}
+    <footer class="footer">
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+
+</html>
