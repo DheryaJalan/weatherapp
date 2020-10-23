@@ -1,0 +1,2 @@
+# weatherapp
+In this weatherapp, the  OpenWeatherMap API is used. This code calls real time data UV index data and temperature data from this API. According to the UV index, precautions for the user are generated. The user can search the UV index and temperature data for any city in this world. A login, sing up ,and log out page has also been created, thus the user needs to login before having access to data and can log out after using the service. 
